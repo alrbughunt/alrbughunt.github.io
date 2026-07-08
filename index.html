@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Alfarizqi | IT Infrastructure, Linux, Network & Cyber Security</title>
+  <meta name="description" content="Personal technical portfolio Alfarizqi, fresh graduate TJKT yang berfokus pada IT Infrastructure, Linux System Administration, Network Engineering, NOC, dan Junior Cyber Security." />
+  <meta name="keywords" content="Alfarizqi, IT Infrastructure, Linux System Administrator, Network Engineer, NOC Engineer, Junior Cyber Security, MikroTik, Cisco, Wazuh, Proxmox VE, FTTH" />
+  <meta name="author" content="Alfarizqi" />
+
+  <meta property="og:title" content="Alfarizqi | Technical Portfolio" />
+  <meta property="og:description" content="Portfolio profesional bidang IT Infrastructure, Linux Administration, Network Engineering, NOC, dan Junior Cyber Security." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://alrbughunt.github.io/" />
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='28' fill='%230b1f3a'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' font-size='68' font-family='Arial' font-weight='700' fill='white'%3EA%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f6f8fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #64748b;
+      --navy: #0b1f3a;
+      --navy-2: #102b4f;
+      --blue: #1f6feb;
+      --blue-soft: #eaf2ff;
+      --line: #e5eaf2;
+      --shadow: 0 18px 50px rgba(11, 31, 58, 0.08);
+      --shadow-soft: 0 10px 28px rgba(11, 31, 58, 0.06);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+      --container: 1120px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #07111f;
+      --surface: #0c1728;
+      --card: #101d31;
+      --text: #e5edf7;
+      --muted: #9fb0c7;
+      --navy: #e5edf7;
+      --navy-2: #cbd8ea;
+      --blue: #6aa6ff;
+      --blue-soft: rgba(106, 166, 255, 0.13);
+      --line: rgba(229, 234, 242, 0.12);
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+      --shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+      text-rendering: optimizeLegibility;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid rgba(31, 111, 235, 0.35);
+      outline-offset: 4px;
+    }
+
+    .container {
+      width: min(100% - 40px, var(--container));
+      margin-inline: auto;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 16px;
+      top: -70px;
+      z-index: 999;
+      padding: 10px 14px;
+      color: #ffffff;
+      background: #0b1f3a;
+      border-radius: 10px;
+      transition: top 0.2s ease;
+    }
+
+    .profile-photo img {
+      width: 100%;
+      height: 340px;
+       object-fit: cover;
+        border-radius: 26px;
+    }
+    
+    .skip-link:focus {
+      top: 16px;
+    }
+
+    /* Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .navbar {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 850;
+      color: var(--navy);
+      letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: linear-gradient(135deg, #0b1f3a, #1f6feb);
+      border-radius: 13px;
+      box-shadow: 0 10px 24px rgba(31, 111, 235, 0.2);
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .nav-menu a {
+      display: inline-flex;
+      align-items: center;
+      padding: 9px 12px;
+      color: var(--muted);
+      font-size: 0.93rem;
+      font-weight: 720;
+      border-radius: 999px;
+      transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+    }
+
+    .nav-menu a:hover,
+    .nav-menu a.active {
+      color: var(--navy);
+      background: var(--blue-soft);
+    }
+
+    .theme-toggle,
+    .nav-toggle {
+      border: 1px solid var(--line);
+      color: var(--navy);
+      background: var(--card);
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .theme-toggle {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+    }
+
+    .nav-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      margin: 4px auto;
+      background: var(--navy);
+      border-radius: 99px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Shared */
+    .section {
+      padding: 88px 0;
+    }
+
+    .section-muted {
+      background: var(--surface);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 0.78rem;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+    }
+
+    .section-title {
+      max-width: 760px;
+      margin-bottom: 34px;
+    }
+
+    .section-title.center {
+      margin-inline: auto;
+      text-align: center;
+    }
+
+    .section-title h2,
+    .section-heading h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(1.9rem, 3vw, 2.7rem);
+      line-height: 1.12;
+      letter-spacing: -0.045em;
+    }
+
+    .section-title p {
+      margin: 12px 0 0;
+      color: var(--muted);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 0.72fr 1.28fr;
+      gap: 56px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      padding: 92px 0 80px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 10%, rgba(31, 111, 235, 0.13), transparent 34%),
+        linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(100, 116, 139, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100, 116, 139, 0.08) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,0.6), transparent 70%);
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.7fr);
+      gap: 44px;
+      align-items: center;
+    }
+
+    .hero h1 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(3.2rem, 8vw, 6.2rem);
+      line-height: 0.9;
+      letter-spacing: -0.075em;
+    }
+
+    .hero h2 {
+      max-width: 800px;
+      margin: 22px 0 0;
+      color: var(--navy-2);
+      font-size: clamp(1.25rem, 2.4vw, 1.95rem);
+      line-height: 1.28;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-summary {
+      max-width: 760px;
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 46px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 820;
+      border: 1px solid transparent;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      color: #ffffff;
+      background: #0b1f3a;
+      box-shadow: 0 14px 34px rgba(11, 31, 58, 0.18);
+    }
+
+    .btn-secondary {
+      color: var(--navy);
+      background: var(--blue-soft);
+      border-color: color-mix(in srgb, var(--blue) 20%, transparent);
+    }
+
+    .btn-ghost {
+      color: var(--navy);
+      background: var(--card);
+      border-color: var(--line);
+    }
+
+    .profile-card {
+      padding: 18px;
+      background: color-mix(in srgb, var(--card) 96%, transparent);
+      border: 1px solid var(--line);
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+    }
+
+    .profile-photo {
+      min-height: 340px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 28px;
+      color: var(--muted);
+      border: 1px dashed color-mix(in srgb, var(--blue) 34%, transparent);
+      border-radius: 26px;
+      background:
+        linear-gradient(135deg, rgba(31, 111, 235, 0.08), rgba(11, 31, 58, 0.04));
+    }
+
+    .profile-photo i {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--blue);
+      font-size: 2.4rem;
+    }
+
+    .profile-meta {
+      display: grid;
+      gap: 12px;
+      padding: 18px 4px 2px;
+    }
+
+    .meta-item {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .meta-item i {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      color: var(--blue);
+      background: var(--blue-soft);
+      border-radius: 12px;
+    }
+
+    .quick-proof {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 28px;
+      max-width: 780px;
+    }
+
+    .proof-item {
+      padding: 15px 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: color-mix(in srgb, var(--card) 80%, transparent);
+      box-shadow: 0 8px 20px rgba(11, 31, 58, 0.04);
+    }
+
+    .proof-item strong {
+      display: block;
+      color: var(--navy);
+      font-size: 1.02rem;
+    }
+
+    .proof-item span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    /* About */
+    .about-panel {
+      padding: 30px;
+    }
+
+    .about-panel p {
+      margin: 0 0 16px;
+      color: var(--muted);
+    }
+
+    .focus-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .focus-box {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+    }
+
+    .focus-box strong {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--navy);
+      margin-bottom: 5px;
+    }
+
+    .focus-box i {
+      color: var(--blue);
+    }
+
+    .focus-box span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    /* Skills */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .skill-card {
+      padding: 22px;
+      border-radius: var(--radius-md);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .skill-card:hover,
+    .project-card:hover,
+    .achievement-card:hover,
+    .cert-card:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in srgb, var(--blue) 25%, var(--line));
+      box-shadow: var(--shadow);
+    }
+
+    .skill-icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 14px;
+      color: var(--blue);
+      background: var(--blue-soft);
+      border-radius: 15px;
+      font-size: 1.15rem;
+    }
+
+    .skill-card h3 {
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-size: 1.06rem;
+    }
+
+    .skill-card p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .skill-card ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--text);
+      font-size: 0.91rem;
+    }
+
+    .skill-card li {
+      margin: 5px 0;
+    }
+
+    /* Projects */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .project-card {
+      padding: 22px;
+      border-radius: var(--radius-lg);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .project-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .project-icon {
+      width: 48px;
+      height: 48px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      color: var(--blue);
+      background: var(--blue-soft);
+      border-radius: 16px;
+      font-size: 1.25rem;
+    }
+
+    .project-card h3 {
+      margin: 0 0 9px;
+      color: var(--navy);
+      font-size: 1.12rem;
+    }
+
+    .project-card p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tags span,
+    .tool-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 6px 10px;
+      color: var(--navy);
+      background: var(--blue-soft);
+      border: 1px solid color-mix(in srgb, var(--blue) 16%, transparent);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 780;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      display: grid;
+      gap: 18px;
+      max-width: 920px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 16px;
+      bottom: 16px;
+      left: 18px;
+      width: 2px;
+      background: var(--line);
+    }
+
+    .timeline-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 18px;
+    }
+
+    .timeline-dot {
+      position: relative;
+      z-index: 1;
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: #1f6feb;
+      border: 5px solid var(--surface);
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px var(--line);
+      font-size: 0.8rem;
+    }
+
+    .timeline-content {
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--card);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .timeline-content h3 {
+      margin: 0 0 4px;
+      color: var(--navy);
+      font-size: 1.06rem;
+    }
+
+    .timeline-content p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    /* Achievement & Certification */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .achievement-card,
+    .cert-card {
+      padding: 22px;
+      border-radius: var(--radius-md);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .achievement-card i,
+    .cert-card i {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 14px;
+      color: var(--blue);
+      background: var(--blue-soft);
+      border-radius: 14px;
+    }
+
+    .achievement-card h3,
+    .cert-card h3 {
+      margin: 0 0 7px;
+      color: var(--navy);
+      font-size: 1.06rem;
+    }
+
+    .achievement-card p,
+    .cert-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    /* Contact */
+    .contact-card {
+      padding: clamp(30px, 5vw, 56px);
+      text-align: center;
+      border-radius: 34px;
+      background:
+        radial-gradient(circle at top left, rgba(31, 111, 235, 0.13), transparent 34%),
+        var(--card);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .contact-card h2 {
+      max-width: 860px;
+      margin: 0 auto;
+      color: var(--navy);
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      line-height: 1.08;
+      letter-spacing: -0.055em;
+    }
+
+    .contact-card p {
+      max-width: 720px;
+      margin: 18px auto 0;
+      color: var(--muted);
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .footer {
+      padding: 28px 0;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer a {
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    /* Responsive */
+    @media (max-width: 1040px) {
+      .hero-grid,
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+
+      .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .project-grid,
+      .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .profile-photo {
+        min-height: 280px;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .nav-toggle {
+        display: block;
+      }
+
+      .nav-menu {
+        position: fixed;
+        top: 82px;
+        left: 20px;
+        right: 20px;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 14px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+      }
+
+      .nav-menu.open {
+        display: flex;
+      }
+
+      .nav-menu a {
+        justify-content: center;
+      }
+
+      .section {
+        padding: 66px 0;
+      }
+
+      .hero {
+        padding: 70px 0 64px;
+      }
+
+      .quick-proof,
+      .focus-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        width: min(100% - 28px, var(--container));
+      }
+
+      .hero-actions,
+      .contact-links {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .skills-grid,
+      .project-grid,
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+      }
+
+      .about-panel,
+      .project-card,
+      .skill-card,
+      .achievement-card,
+      .cert-card {
+        padding: 20px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .reveal,
+      .btn,
+      .skill-card,
+      .project-card,
+      .achievement-card,
+      .cert-card {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Lewati ke konten utama</a>
+
+  <!-- Header / Navigation -->
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Navigasi utama">
+      <a href="#top" class="brand" aria-label="Kembali ke beranda">
+        <span class="brand-mark">A</span>
+        <span>Alfarizqi</span>
+      </a>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#achievements">Achievement</a></li>
+        <li><a href="#certifications">Certification</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" id="themeToggle" aria-label="Ganti mode gelap atau terang">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <button class="nav-toggle" type="button" id="navToggle" aria-label="Buka menu navigasi" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero" id="top">
+      <div class="container hero-grid">
+        <div class="hero-content reveal">
+          <p class="eyebrow">Personal Technical Portfolio</p>
+          <h1>ALFARIZQI</h1>
+          <h2>IT Infrastructure · Linux System Administration · Network Engineering · Junior Cyber Security</h2>
+          <p class="hero-summary">
+            Fresh graduate SMK TJKT dengan pengalaman praktik NOC & FOC di ISP, administrasi Linux Server,
+            monitoring Wazuh SIEM/Cacti, konfigurasi MikroTik/Cisco, FTTH, dan kompetisi Cyber Security.
+          </p>
+
+          <div class="hero-actions" aria-label="Tautan utama">
+            <a class="btn btn-primary" href="CV_Alfarizqi.pdf" download>
+              <i class="fa-solid fa-file-arrow-down"></i> Download CV
+            </a>
+            <a class="btn btn-secondary" href="Portfolio_Alfarizqi.pdf" download>
+              <i class="fa-solid fa-folder-open"></i> Download Portfolio
+            </a>
+            <a class="btn btn-ghost" href="https://github.com/alrbughunt" target="_blank" rel="noopener">
+              <i class="fa-brands fa-github"></i> GitHub
+            </a>
+            <a class="btn btn-ghost" href="https://www.linkedin.com/in/alfarizqi-009673366/" target="_blank" rel="noopener">
+              <i class="fa-brands fa-linkedin"></i> LinkedIn
+            </a>
+            <a class="btn btn-ghost" href="#contact">
+              <i class="fa-solid fa-envelope"></i> Contact
+            </a>
+          </div>
+
+          <div class="quick-proof" aria-label="Ringkasan bukti kemampuan">
+            <div class="proof-item">
+              <strong>PKL ISP</strong>
+              <span>NOC & FOC PT Bonanzanet</span>
+            </div>
+            <div class="proof-item">
+              <strong>Juara 1 LKS</strong>
+              <span>Cyber Security Kabupaten</span>
+            </div>
+            <div class="proof-item">
+              <strong>Homelab</strong>
+              <span>Linux · Proxmox · Wazuh</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="profile-card reveal" aria-label="Foto dan kontak singkat">
+          <div class="profile-photo">
+            <div class="profile-foto">
+                 <img src="Foto-Alfarizqi.jpg" alt="Alfarizqi" />
+            </div>
+
+          <div class="profile-meta">
+            <div class="meta-item">
+              <i class="fa-solid fa-location-dot"></i>
+              <span>Kabupaten Tasikmalaya, Jawa Barat</span>
+            </div>
+            <div class="meta-item">
+              <i class="fa-solid fa-envelope"></i>
+              <a href="mailto:alfarizkiar123@gmail.com">alfarizkiar123@gmail.com</a>
+            </div>
+            <div class="meta-item">
+              <i class="fa-brands fa-whatsapp"></i>
+              <a href="https://wa.me/6285974707051" target="_blank" rel="noopener">085974707051</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- About Me -->
+    <section class="section" id="about">
+      <div class="container two-column">
+        <div class="section-heading reveal">
+          <p class="eyebrow">About Me</p>
+          <h2>Calon engineer yang berfokus pada infrastruktur, Linux, jaringan, dan keamanan.</h2>
+        </div>
+
+        <div class="about-panel card reveal">
+          <p>
+            Saya adalah lulusan SMK Teknik Jaringan Komputer dan Telekomunikasi yang membangun kemampuan teknis melalui
+            praktik laboratorium, homelab, kompetisi Cyber Security, dan pengalaman PKL di lingkungan Internet Service Provider.
+          </p>
+          <p>
+            Fokus saya berada pada Linux Server, Network Engineering, IT Infrastructure, NOC operation, monitoring, dan
+            Cyber Security dasar. Saya terbiasa belajar dengan cara membangun lab, menguji konfigurasi, membaca log,
+            melakukan troubleshooting, lalu mendokumentasikan hasil implementasi.
+          </p>
+
+          <div class="focus-grid">
+            <div class="focus-box">
+              <strong><i class="fa-solid fa-server"></i> Linux & Infrastructure</strong>
+              <span>Administrasi Linux Server, layanan web, hardening dasar, dan virtualisasi.</span>
+            </div>
+            <div class="focus-box">
+              <strong><i class="fa-solid fa-network-wired"></i> Network Engineering</strong>
+              <span>MikroTik, Cisco, VLAN, routing, firewall, failover, dan FTTH.</span>
+            </div>
+            <div class="focus-box">
+              <strong><i class="fa-solid fa-chart-line"></i> Monitoring</strong>
+              <span>Monitoring resource dan keamanan menggunakan Wazuh SIEM dan Cacti.</span>
+            </div>
+            <div class="focus-box">
+              <strong><i class="fa-solid fa-shield-halved"></i> Cyber Security</strong>
+              <span>CTF, web exploitation, vulnerability assessment, dan responsible disclosure.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technical Skills -->
+    <section class="section section-muted" id="skills">
+      <div class="container">
+        <div class="section-title reveal">
+          <p class="eyebrow">Technical Skills</p>
+          <h2>Kemampuan teknis yang relevan dengan role Infrastructure, NOC, Network, Linux, dan Junior Security.</h2>
+          <p>Disusun berdasarkan praktik nyata di lab, project, kompetisi, dan pengalaman PKL.</p>
+        </div>
+
+        <div class="skills-grid">
+          <article class="skill-card card reveal">
+            <div class="skill-icon"><i class="fa-solid fa-network-wired"></i></div>
+            <h3>Networking</h3>
+            <p>Konfigurasi dan simulasi jaringan menggunakan MikroTik dan Cisco.</p>
+            <ul>
+              <li>VLAN, Inter-VLAN, DHCP, NAT</li>
+              <li>RIP, OSPF, BGP</li>
+              <li>Firewall, Load Balancing, Failover</li>
+            </ul>
+          </article>
+
+          <article class="skill-card card reveal">
+            <div class="skill-icon"><i class="fa-brands fa-linux"></i></div>
+            <h3>Linux</h3>
+            <p>Instalasi, administrasi, service management, dan hardening dasar.</p>
+            <ul>
+              <li>Ubuntu Server, Debian</li>
+              <li>CentOS untuk pembelajaran hardening</li>
+              <li>SSH, Samba, ProFTPD, aaPanel</li>
+            </ul>
+          </article>
+
+          <article class="skill-card card reveal">
+            <div class="skill-icon"><i class="fa-solid fa-diagram-project"></i></div>
+            <h3>Infrastructure</h3>
+            <p>Fondasi infrastruktur server, layanan internal, dan operasional ISP.</p>
+            <ul>
+              <li>FTTH, OLT, ONT, ODP</li>
+              <li>Apache, Nginx</li>
+              <li>MariaDB, MySQL</li>
+            </ul>
+          </article>
+
+          <article class="skill-card card reveal">
+            <div class="skill-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <h3>Cyber Security</h3>
+            <p>Praktik keamanan sistem, jaringan, dan web security secara etis.</p>
+            <ul>
+              <li>Linux Hardening, SSH Hardening</li>
+              <li>Suricata, Snort, Fail2ban, Auditd</li>
+              <li>Nmap, Wireshark, Burp Suite</li>
+            </ul>
+          </article>
+
+          <article class="skill-card card reveal">
+            <div class="skill-icon"><i class="fa-solid fa-chart-simple"></i></div>
+            <h3>Monitoring</h3>
+            <p>Monitoring resource server dan event keamanan.</p>
+            <ul>
+              <li>Wazuh SIEM</li>
+              <li>Cacti</li>
+              <li>Log analysis, rule tuning</li>
+            </ul>
+          </article>
+
+          <article class="skill-card card reveal">
+            <div class="skill-icon"><i class="fa-solid fa-cubes"></i></div>
+            <h3>Virtualization</h3>
+            <p>Homelab virtual untuk simulasi server dan monitoring.</p>
+            <ul>
+              <li>Proxmox VE</li>
+              <li>VM Ubuntu Server</li>
+              <li>Windows Server basic, Moodle, FlyExam</li>
+            </ul>
+          </article>
+
+          <article class="skill-card card reveal">
+            <div class="skill-icon"><i class="fa-solid fa-tower-cell"></i></div>
+            <h3>Fiber Optic</h3>
+            <p>Pengalaman praktik jaringan fiber optik di lingkungan ISP.</p>
+            <ul>
+              <li>FTTH installation</li>
+              <li>Fusion Splicing</li>
+              <li>OPM, OLS, analisis dasar OTDR</li>
+            </ul>
+          </article>
+
+          <article class="skill-card card reveal">
+            <div class="skill-icon"><i class="fa-solid fa-globe"></i></div>
+            <h3>Web & CMS</h3>
+            <p>Deployment website perusahaan berbasis WordPress.</p>
+            <ul>
+              <li>WordPress</li>
+              <li>Hosting configuration</li>
+              <li>Theme, plugin, content management</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Projects -->
+    <section class="section" id="projects">
+      <div class="container">
+        <div class="section-title reveal">
+          <p class="eyebrow">Featured Projects</p>
+          <h2>Project teknis yang menunjukkan cara saya membangun, mengamankan, dan memonitor infrastruktur.</h2>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card card reveal">
+            <div class="project-top">
+              <div>
+                <h3>Linux Hardening</h3>
+                <p>Praktik pengamanan akses dan layanan Linux menggunakan SSH hardening, firewall, Fail2ban, Auditd, dan OpenVPN.</p>
+              </div>
+              <div class="project-icon"><i class="fa-solid fa-lock"></i></div>
+            </div>
+            <div class="tags">
+              <span>SSH</span><span>Fail2ban</span><span>Auditd</span><span>OpenVPN</span>
+            </div>
+          </article>
+
+          <article class="project-card card reveal">
+            <div class="project-top">
+              <div>
+                <h3>Linux Server</h3>
+                <p>Instalasi dan konfigurasi layanan Linux Server untuk simulasi lingkungan produksi dan pembelajaran administrasi sistem.</p>
+              </div>
+              <div class="project-icon"><i class="fa-brands fa-linux"></i></div>
+            </div>
+            <div class="tags">
+              <span>Ubuntu</span><span>Debian</span><span>CentOS</span><span>Apache</span><span>Nginx</span>
+            </div>
+          </article>
+
+          <article class="project-card card reveal">
+            <div class="project-top">
+              <div>
+                <h3>Proxmox VE Homelab</h3>
+                <p>Membangun lab virtual untuk menjalankan Ubuntu Server, Windows Server basic, Wazuh, Moodle, dan FlyExam.</p>
+              </div>
+              <div class="project-icon"><i class="fa-solid fa-cubes"></i></div>
+            </div>
+            <div class="tags">
+              <span>Proxmox VE</span><span>VM</span><span>Wazuh</span><span>Moodle</span>
+            </div>
+          </article>
+
+          <article class="project-card card reveal">
+            <div class="project-top">
+              <div>
+                <h3>Wazuh SIEM</h3>
+                <p>Implementasi monitoring keamanan server, analisis log, dan rule tuning untuk memahami alert serta event keamanan.</p>
+              </div>
+              <div class="project-icon"><i class="fa-solid fa-chart-line"></i></div>
+            </div>
+            <div class="tags">
+              <span>Wazuh</span><span>Cacti</span><span>Log Analysis</span><span>Monitoring</span>
+            </div>
+          </article>
+
+          <article class="project-card card reveal">
+            <div class="project-top">
+              <div>
+                <h3>Company Website</h3>
+                <p>Membangun website perusahaan menggunakan WordPress, mulai dari instalasi CMS, hosting, database, tema, plugin, dan konten.</p>
+              </div>
+              <div class="project-icon"><i class="fa-brands fa-wordpress"></i></div>
+            </div>
+            <div class="tags">
+              <span>WordPress</span><span>Apache</span><span>Nginx</span><span>MariaDB</span>
+            </div>
+          </article>
+
+          <article class="project-card card reveal">
+            <div class="project-top">
+              <div>
+                <h3>Network Lab</h3>
+                <p>Simulasi jaringan menggunakan MikroTik dan Cisco untuk VLAN, routing, NAT, firewall, load balancing, dan failover.</p>
+              </div>
+              <div class="project-icon"><i class="fa-solid fa-network-wired"></i></div>
+            </div>
+            <div class="tags">
+              <span>MikroTik</span><span>Cisco</span><span>VLAN</span><span>OSPF</span><span>BGP</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section class="section section-muted" id="experience">
+      <div class="container">
+        <div class="section-title reveal">
+          <p class="eyebrow">Experience Timeline</p>
+          <h2>Perjalanan belajar, praktik, kompetisi, dan pengalaman operasional.</h2>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"><i class="fa-solid fa-school"></i></div>
+            <div class="timeline-content">
+              <h3>SMK YPC Tasikmalaya — TJKT</h3>
+              <p>Membangun fondasi jaringan komputer, Linux Server, dan infrastruktur IT.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"><i class="fa-solid fa-server"></i></div>
+            <div class="timeline-content">
+              <h3>Homelab & Praktik Laboratorium</h3>
+              <p>Eksplorasi Proxmox VE, Ubuntu Server, Debian, CentOS, Wazuh SIEM, Cacti, MikroTik, dan Cisco.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"><i class="fa-solid fa-building"></i></div>
+            <div class="timeline-content">
+              <h3>PKL PT Bonanzanet — NOC & FOC</h3>
+              <p>Monitoring jaringan ISP, troubleshooting awal pelanggan, koordinasi teknisi, dokumentasi gangguan, FTTH, OPM/OLS, dan analisis dasar OTDR.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"><i class="fa-solid fa-trophy"></i></div>
+            <div class="timeline-content">
+              <h3>Juara 1 LKS Kabupaten Bidang Cyber Security</h3>
+              <p>Mengasah kemampuan problem solving, analisis, keamanan sistem, dan praktik kompetisi Cyber Security.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"><i class="fa-solid fa-medal"></i></div>
+            <div class="timeline-content">
+              <h3>Peserta LKS Provinsi Jawa Barat Bidang Cyber Security</h3>
+              <p>Melanjutkan pengalaman kompetisi ke tingkat provinsi dan meningkatkan ketahanan teknis saat menyelesaikan challenge.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="timeline-content">
+              <h3>Hall of Fame & Vulnerability Disclosure</h3>
+              <p>Mendapatkan pengakuan dari berbagai CSIRT daerah serta pengakuan kerentanan keamanan dari BRI dan CIMB Niaga.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"><i class="fa-solid fa-users"></i></div>
+            <div class="timeline-content">
+              <h3>Ketua Ekstrakurikuler Cyber Security</h3>
+              <p>Membimbing anggota melalui materi Linux Server, jaringan komputer, hardening Linux, dan praktik keamanan dasar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Achievements -->
+    <section class="section" id="achievements">
+      <div class="container">
+        <div class="section-title reveal">
+          <p class="eyebrow">Achievements</p>
+          <h2>Bukti pencapaian dari kompetisi, disclosure, dan aktivitas keamanan siber.</h2>
+        </div>
+
+        <div class="card-grid">
+          <article class="achievement-card card reveal">
+            <i class="fa-solid fa-trophy"></i>
+            <h3>Juara 1 LKS Kabupaten</h3>
+            <p>Juara 1 LKS Kabupaten Tasikmalaya Bidang Cyber Security.</p>
+          </article>
+
+          <article class="achievement-card card reveal">
+            <i class="fa-solid fa-medal"></i>
+            <h3>Peserta LKS Provinsi</h3>
+            <p>Peserta LKS Tingkat Provinsi Jawa Barat Bidang Cyber Security Tahun 2026.</p>
+          </article>
+
+          <article class="achievement-card card reveal">
+            <i class="fa-solid fa-award"></i>
+            <h3>Hall of Fame CSIRT</h3>
+            <p>Mendapatkan Hall of Fame dari berbagai CSIRT daerah.</p>
+          </article>
+
+          <article class="achievement-card card reveal">
+            <i class="fa-solid fa-building-columns"></i>
+            <h3>BRI Recognition</h3>
+            <p>Mendapatkan pengakuan kerentanan keamanan dari BRI.</p>
+          </article>
+
+          <article class="achievement-card card reveal">
+            <i class="fa-solid fa-building-columns"></i>
+            <h3>CIMB Niaga Recognition</h3>
+            <p>Mendapatkan pengakuan kerentanan keamanan dari CIMB Niaga.</p>
+          </article>
+
+          <article class="achievement-card card reveal">
+            <i class="fa-solid fa-flag"></i>
+            <h3>CTF Practice</h3>
+            <p>Aktif mengikuti berbagai kompetisi Capture The Flag untuk meningkatkan kemampuan teknis.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Certifications -->
+    <section class="section section-muted" id="certifications">
+      <div class="container">
+        <div class="section-title reveal">
+          <p class="eyebrow">Certifications</p>
+          <h2>Sertifikasi dan pelatihan yang mendukung profil teknis saya.</h2>
+        </div>
+
+        <div class="card-grid">
+          <article class="cert-card card reveal">
+            <i class="fa-solid fa-certificate"></i>
+            <h3>BNSP Junior Network Administrator</h3>
+            <p>Sertifikasi kompetensi bidang administrasi jaringan tingkat junior.</p>
+          </article>
+
+          <article class="cert-card card reveal">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h3>IDN Cyber Security Bootcamp</h3>
+            <p>Bootcamp Cyber Security selama 3 bulan.</p>
+          </article>
+
+          <article class="cert-card card reveal">
+            <i class="fa-solid fa-bug"></i>
+            <h3>CodeLamp Practical Web Pentesting</h3>
+            <p>CodeLamp Batch 1 Practical Web Pentesting dengan predikat A+.</p>
+          </article>
+
+          <article class="cert-card card reveal">
+            <i class="fa-solid fa-language"></i>
+            <h3>TOEFL / EPT Score 537</h3>
+            <p>Skor TOEFL/EPT sebagai bukti kemampuan bahasa Inggris akademik dasar.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="contact-card reveal">
+          <p class="eyebrow">Contact</p>
+          <h2>Terbuka untuk peluang IT Infrastructure, Network, Linux, NOC, dan Junior Cyber Security.</h2>
+          <p>
+            Saya siap belajar, berkembang, dan berkontribusi dalam lingkungan kerja yang berhubungan dengan infrastruktur IT,
+            jaringan, Linux Server, monitoring, dan keamanan siber.
+          </p>
+
+          <div class="contact-links">
+            <a class="btn btn-primary" href="mailto:alfarizkiar123@gmail.com">
+              <i class="fa-solid fa-envelope"></i> Email
+            </a>
+            <a class="btn btn-secondary" href="https://wa.me/6285974707051" target="_blank" rel="noopener">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </a>
+            <a class="btn btn-ghost" href="https://github.com/alrbughunt" target="_blank" rel="noopener">
+              <i class="fa-brands fa-github"></i> GitHub
+            </a>
+            <a class="btn btn-ghost" href="https://www.linkedin.com/in/alfarizqi-009673366/" target="_blank" rel="noopener">
+              <i class="fa-brands fa-linkedin"></i> LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>© <span id="year"></span> Alfarizqi. Personal Technical Portfolio.</p>
+      <a href="#top">Back to top</a>
+    </div>
+  </footer>
+
+  <script>
+    const root = document.documentElement;
+    const navToggle = document.getElementById("navToggle");
+    const navMenu = document.getElementById("navMenu");
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = themeToggle.querySelector("i");
+    const navLinks = document.querySelectorAll(".nav-menu a");
+    const sections = document.querySelectorAll("main section[id]");
+    const revealItems = document.querySelectorAll(".reveal");
+    const year = document.getElementById("year");
+
+    if (year) {
+      year.textContent = new Date().getFullYear();
+    }
+
+    const savedTheme = localStorage.getItem("portfolio-theme");
+    if (savedTheme === "dark") {
+      root.setAttribute("data-theme", "dark");
+      themeIcon.className = "fa-solid fa-sun";
+    }
+
+    themeToggle.addEventListener("click", () => {
+      const isDark = root.getAttribute("data-theme") === "dark";
+      if (isDark) {
+        root.removeAttribute("data-theme");
+        localStorage.setItem("portfolio-theme", "light");
+        themeIcon.className = "fa-solid fa-moon";
+      } else {
+        root.setAttribute("data-theme", "dark");
+        localStorage.setItem("portfolio-theme", "dark");
+        themeIcon.className = "fa-solid fa-sun";
+      }
+    });
+
+    navToggle.addEventListener("click", () => {
+      const isOpen = navMenu.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        navMenu.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    revealItems.forEach((item) => revealObserver.observe(item));
+
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const id = entry.target.getAttribute("id");
+          const activeLink = document.querySelector(`.nav-menu a[href="#${id}"]`);
+
+          if (entry.isIntersecting) {
+            navLinks.forEach((link) => link.classList.remove("active"));
+            if (activeLink) activeLink.classList.add("active");
+          }
+        });
+      },
+      { rootMargin: "-35% 0px -55% 0px", threshold: 0.01 }
+    );
+
+    sections.forEach((section) => sectionObserver.observe(section));
+  </script>
+</body>
+</html>
