@@ -1,96 +1,202 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <title>Permission Origin Spoofing PoC</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f9f9f9;
-    }
+<title>Browser Permission Origin Test PoC</title>
 
-    .spoof-box {
-      background: white;
-      border: 2px solid #ddd;
-      padding: 20px;
-      margin-top: 20px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
+<style>
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: #f5f5f5;
+}
 
-    .warning {
-      color: red;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
+.card {
+    background: white;
+    padding: 20px;
+    margin-top: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
 
-    button {
-      padding: 10px 20px;
-      background: #4285f4;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
+button {
+    padding: 12px 20px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-    button:hover {
-      background: #3367d6;
-    }
-  </style>
+button:hover {
+    background:#1d4ed8;
+}
+
+.warning {
+    color:red;
+    font-weight:bold;
+}
+
+pre {
+    background:#111;
+    color:#0f0;
+    padding:15px;
+}
+</style>
+
 </head>
 
 <body>
 
-  <h2>🎯 Permission Origin Spoofing PoC (Demo)</h2>
-  <p>Halaman ini HANYA simulasi untuk tujuan edukasi dan laporan keamanan.</p>
 
-  <button onclick="requestFakePermission()">Start PoC</button>
+<h2>🔍 Browser Permission Origin Testing PoC</h2>
 
-  <div class="spoof-box">
-    <div class="warning">⚠️ PERINGATAN: Ini BUKAN domain google.com — hanya simulasi tampilan!</div>
-    <img src="https://i.imgur.com/6XkYqoH.png" alt="Simulasi Popup" style="max-width:100%; border:1px solid #ccc;">
-    <p><small>Simulasi popup permission yang mengatasnamakan "google.com" — tidak nyata.</small></p>
-  </div>
+<p>
+PoC ini digunakan untuk menguji bagaimana browser
+menampilkan identitas origin ketika meminta permission.
+</p>
 
-  <script>
 
-    function requestFakePermission() {
+<div class="card">
 
-      // Memanggil permission geolocation asli browser
-      if (navigator.geolocation) {
+<h3>Current Origin Information</h3>
 
-        navigator.geolocation.getCurrentPosition(
-          function (position) {
+<pre id="originInfo">
+Loading...
+</pre>
 
-            alert(
-              "Permission diberikan.\n" +
-              "Latitude: " + position.coords.latitude +
-              "\nLongitude: " + position.coords.longitude
-            );
+</div>
 
-          },
 
-          function (error) {
+<div class="card">
 
-            alert(
-              "Permission ditolak atau gagal.\n\n" +
-              "Code: " + error.code +
-              "\nMessage: " + error.message
-            );
+<h3>Real Geolocation Permission Test</h3>
 
-          }
+<button onclick="requestLocation()">
+Request Location Permission
+</button>
 
-        );
 
-      } else {
+<p id="result"></p>
 
-        alert("Browser tidak mendukung geolocation.");
 
-      }
+</div>
 
+
+
+<div class="card">
+
+<h3>Fake Permission UI Simulation</h3>
+
+<p class="warning">
+⚠️ Ini hanya simulasi tampilan. Bukan permission browser asli.
+</p>
+
+
+<button onclick="fakePopup()">
+Show Fake Dialog
+</button>
+
+</div>
+
+
+
+<script>
+
+
+// Menampilkan origin asli halaman
+
+document.getElementById("originInfo").innerText =
+`
+Origin:
+${window.location.origin}
+
+Hostname:
+${window.location.hostname}
+
+Protocol:
+${window.location.protocol}
+
+User Agent:
+${navigator.userAgent}
+`;
+
+
+
+
+// Permission geolocation asli browser
+
+function requestLocation(){
+
+    const result =
+    document.getElementById("result");
+
+
+    if(!navigator.geolocation){
+
+        result.innerHTML =
+        "Browser tidak mendukung Geolocation";
+
+        return;
     }
 
-  </script>
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position){
+
+            result.innerHTML =
+            `
+            ✅ Permission Granted
+            
+            Latitude:
+            ${position.coords.latitude}
+
+            Longitude:
+            ${position.coords.longitude}
+            `;
+
+        },
+
+
+        function(error){
+
+            result.innerHTML =
+            `
+            ❌ Permission Failed
+
+            Code:
+            ${error.code}
+
+            Message:
+            ${error.message}
+            `;
+        }
+
+    );
+
+}
+
+
+
+
+
+// Simulasi UI spoofing
+
+function fakePopup(){
+
+    confirm(
+`"google.com" Would Like to:
+
+Access your location.
+
+Cancel      Allow`
+    );
+
+}
+
+
+</script>
+
 
 </body>
-
 </html>
