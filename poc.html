@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Permission Origin Spoofing PoC</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+
+    .spoof-box {
+      background: white;
+      border: 2px solid #ddd;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .warning {
+      color: red;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #4285f4;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #3367d6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>🎯 Permission Origin Spoofing PoC (Demo)</h2>
+  <p>Halaman ini HANYA simulasi untuk tujuan edukasi dan laporan keamanan.</p>
+
+  <button onclick="requestFakePermission()">Start PoC</button>
+
+  <div class="spoof-box">
+    <div class="warning">⚠️ PERINGATAN: Ini BUKAN domain google.com — hanya simulasi tampilan!</div>
+    <img src="https://i.imgur.com/6XkYqoH.png" alt="Simulasi Popup" style="max-width:100%; border:1px solid #ccc;">
+    <p><small>Simulasi popup permission yang mengatasnamakan "google.com" — tidak nyata.</small></p>
+  </div>
+
+  <script>
+
+    function requestFakePermission() {
+
+      // Memanggil permission geolocation asli browser
+      if (navigator.geolocation) {
+
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+
+            alert(
+              "Permission diberikan.\n" +
+              "Latitude: " + position.coords.latitude +
+              "\nLongitude: " + position.coords.longitude
+            );
+
+          },
+
+          function (error) {
+
+            alert(
+              "Permission ditolak atau gagal.\n\n" +
+              "Code: " + error.code +
+              "\nMessage: " + error.message
+            );
+
+          }
+
+        );
+
+      } else {
+
+        alert("Browser tidak mendukung geolocation.");
+
+      }
+
+    }
+
+  </script>
+
+</body>
+
+</html>
