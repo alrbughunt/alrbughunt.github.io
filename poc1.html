@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Browser Permission Origin Test PoC</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: #f5f5f5;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    margin-top: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+button {
+    padding: 12px 20px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+.warning {
+    color: red;
+    font-weight: bold;
+}
+
+pre {
+    background: #111;
+    color: #0f0;
+    padding: 15px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>🔍 Browser Permission Origin Testing PoC</h2>
+
+<p>
+PoC ini digunakan untuk menguji bagaimana browser
+menampilkan identitas origin ketika meminta permission.
+</p>
+
+
+<div class="card">
+
+<h3>Current Origin Information</h3>
+
+<pre id="originInfo">
+Loading...
+</pre>
+
+</div>
+
+
+<div class="card">
+
+<h3>Permission Test</h3>
+
+<p>
+Satu klik akan menjalankan permission geolocation asli
+dan simulasi dialog secara berurutan.
+</p>
+
+<button onclick="runTest()">
+Run Permission Test
+</button>
+
+<p id="result"></p>
+
+</div>
+
+
+<div class="card">
+
+<h3>Fake Permission UI Simulation</h3>
+
+<p class="warning">
+⚠️ Ini hanya simulasi tampilan. Bukan permission browser asli.
+</p>
+
+</div>
+
+
+<script>
+
+// Menampilkan origin asli halaman
+
+document.getElementById("originInfo").innerText =
+`
+Origin:
+${window.location.origin}
+
+Hostname:
+${window.location.hostname}
+
+Protocol:
+${window.location.protocol}
+
+User Agent:
+${navigator.userAgent}
+`;
+
+
+// Satu tombol menjalankan semuanya
+
+function runTest() {
+
+    // 1. Request permission geolocation asli
+
+    requestLocation();
+
+}
+
+
+// Permission geolocation asli browser
+
+function requestLocation() {
+
+    const result =
+        document.getElementById("result");
+
+    if (!navigator.geolocation) {
+
+        result.innerHTML =
+            "Browser tidak mendukung Geolocation";
+
+        showFakeDialog();
+        return;
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            result.innerHTML =
+            `
+            ✅ Permission Granted
+
+            Latitude:
+            ${position.coords.latitude}
+
+            Longitude:
+            ${position.coords.longitude}
+            `;
+
+            // Setelah permission selesai,
+            // tampilkan simulasi
+
+            showFakeDialog();
+
+        },
+
+
+        function(error) {
+
+            result.innerHTML =
+            `
+            ❌ Permission Failed
+
+            Code:
+            ${error.code}
+
+            Message:
+            ${error.message}
+            `;
+
+            // Tetap jalankan simulasi
+            showFakeDialog();
+
+        }
+
+    );
+
+}
+
+
+// Simulasi UI
+
+function showFakeDialog() {
+
+    confirm(
+`"google.com" Would Like to:
+
+Access your location.
+
+`
+    );
+
+}
+
+</script>
+
+</body>
+</html>
