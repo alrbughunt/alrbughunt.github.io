@@ -1,197 +1,242 @@
+```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Browser Permission Origin Test PoC</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background: #f5f5f5;
-}
+    <title>Safari Geolocation Permission Diagnostic</title>
 
-.card {
-    background: white;
-    padding: 20px;
-    margin-top: 15px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-button {
-    padding: 12px 20px;
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont,
+                "Segoe UI", Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 16px;
+            background: #f5f7fb;
+            color: #172033;
+        }
 
-button:hover {
-    background: #1d4ed8;
-}
+        h1 {
+            font-size: 24px;
+        }
 
-.warning {
-    color: red;
-    font-weight: bold;
-}
+        .card {
+            background: #fff;
+            padding: 20px;
+            margin: 16px 0;
+            border: 1px solid #e1e6ef;
+            border-radius: 12px;
+        }
 
-pre {
-    background: #111;
-    color: #0f0;
-    padding: 15px;
-}
-</style>
+        button {
+            padding: 12px 18px;
+            border: 0;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #fff;
+            font-size: 15px;
+            cursor: pointer;
+        }
 
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        pre {
+            padding: 14px;
+            border-radius: 8px;
+            background: #111827;
+            color: #d1fae5;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .notice {
+            color: #854d0e;
+            background: #fef9c3;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .muted {
+            color: #64748b;
+            font-size: 14px;
+        }
+    </style>
 </head>
 
 <body>
+    <h1>Safari Geolocation Diagnostic</h1>
 
-<h2>🔍 Browser Permission Origin Testing PoC</h2>
+    <p>
+        This page records the requesting origin and the outcome
+        of a standard browser geolocation request.
+    </p>
 
-<p>
-PoC ini digunakan untuk menguji bagaimana browser
-menampilkan identitas origin ketika meminta permission.
-</p>
+    <div class="card">
+        <h2>Environment</h2>
+        <pre id="environment">Loading...</pre>
+    </div>
 
+    <div class="card">
+        <h2>Geolocation Test</h2>
 
-<div class="card">
+        <p class="notice">
+            This test requests your location through the browser's
+            Geolocation API. Grant access only if you consent.
+            Coordinates will be displayed locally on this page.
+        </p>
 
-<h3>Current Origin Information</h3>
+        <button id="runButton" type="button">
+            Run Geolocation Test
+        </button>
 
-<pre id="originInfo">
-Loading...
-</pre>
+        <button id="clearButton" type="button">
+            Clear Log
+        </button>
 
-</div>
+        <p class="muted">
+            No simulated permission dialog is used.
+        </p>
 
+        <h3>Test Log</h3>
+        <pre id="result" aria-live="polite">Ready.</pre>
+    </div>
 
-<div class="card">
+    <script>
+        "use strict";
 
-<h3>Permission Test</h3>
+        const environment =
+            document.getElementById("environment");
 
-<p>
-Satu klik akan menjalankan permission geolocation asli
-dan simulasi dialog secara berurutan.
-</p>
+        const result =
+            document.getElementById("result");
 
-<button onclick="runTest()">
-Run Permission Test
-</button>
+        const runButton =
+            document.getElementById("runButton");
 
-<p id="result"></p>
+        const clearButton =
+            document.getElementById("clearButton");
 
-</div>
+        environment.textContent = [
+            `Origin: ${window.location.origin}`,
+            `Hostname: ${window.location.hostname}`,
+            `Protocol: ${window.location.protocol}`,
+            `Secure context: ${window.isSecureContext}`,
+            `User agent: ${navigator.userAgent}`,
+            `Timestamp: ${new Date().toISOString()}`
+        ].join("\n");
 
-<script>
+        function log(message) {
+            const timestamp = new Date().toISOString();
 
-// Menampilkan origin asli halaman
-
-document.getElementById("originInfo").innerText =
-`
-Origin:
-${window.location.origin}
-
-Hostname:
-${window.location.hostname}
-
-Protocol:
-${window.location.protocol}
-
-User Agent:
-${navigator.userAgent}
-`;
-
-
-// Satu tombol menjalankan semuanya
-
-function runTest() {
-
-    // 1. Request permission geolocation asli
-
-    requestLocation();
-
-}
-
-
-// Permission geolocation asli browser
-
-function requestLocation() {
-
-    const result =
-        document.getElementById("result");
-
-    if (!navigator.geolocation) {
-
-        result.innerHTML =
-            "Browser tidak mendukung Geolocation";
-
-        showFakeDialog();
-        return;
-    }
-
-
-    navigator.geolocation.getCurrentPosition(
-
-        function(position) {
-
-            result.innerHTML =
-            `
-            ✅ Permission Granted
-
-            Latitude:
-            ${position.coords.latitude}
-
-            Longitude:
-            ${position.coords.longitude}
-            `;
-
-            // Setelah permission selesai,
-            // tampilkan simulasi
-
-            showFakeDialog();
-
-        },
-
-
-        function(error) {
-
-            result.innerHTML =
-            `
-            ❌ Permission Failed
-
-            Code:
-            ${error.code}
-
-            Message:
-            ${error.message}
-            `;
-
-            // Tetap jalankan simulasi
-            showFakeDialog();
-
+            result.textContent +=
+                `[${timestamp}] ${message}\n`;
         }
 
-    );
+        function runTest() {
+            result.textContent = "";
 
-}
+            log(`Origin: ${window.location.origin}`);
+            log(`User agent: ${navigator.userAgent}`);
+            log("Geolocation test started.");
 
+            if (!window.isSecureContext) {
+                log(
+                    "Warning: This page is not a secure context."
+                );
+            }
 
-// Simulasi UI
+            if (!navigator.geolocation) {
+                log("Geolocation API is unavailable.");
+                return;
+            }
 
-function showFakeDialog() {
+            runButton.disabled = true;
 
-    confirm(
-`"google.com" Would Like to:
+            log("Calling getCurrentPosition().");
+            log("Waiting for the browser response.");
 
-Access your location.
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    log("Geolocation callback: SUCCESS.");
 
-`
-    );
+                    log(
+                        `Latitude: ${position.coords.latitude}`
+                    );
 
-}
+                    log(
+                        `Longitude: ${position.coords.longitude}`
+                    );
 
-</script>
+                    log(
+                        `Accuracy: ${position.coords.accuracy} meters`
+                    );
 
+                    log(
+                        `Position timestamp: ${
+                            new Date(
+                                position.timestamp
+                            ).toISOString()
+                        }`
+                    );
+
+                    runButton.disabled = false;
+                    log("Test completed.");
+                },
+
+                function (error) {
+                    const errorNames = {
+                        1: "PERMISSION_DENIED",
+                        2: "POSITION_UNAVAILABLE",
+                        3: "TIMEOUT"
+                    };
+
+                    log("Geolocation callback: ERROR.");
+
+                    log(
+                        `Error code: ${error.code}`
+                    );
+
+                    log(
+                        `Error type: ${
+                            errorNames[error.code] || "UNKNOWN"
+                        }`
+                    );
+
+                    log(
+                        `Error message: ${error.message}`
+                    );
+
+                    runButton.disabled = false;
+                    log("Test completed.");
+                },
+
+                {
+                    enableHighAccuracy: false,
+                    timeout: 15000,
+                    maximumAge: 0
+                }
+            );
+
+            log("Request submitted.");
+        }
+
+        runButton.addEventListener("click", runTest);
+
+        clearButton.addEventListener("click", function () {
+            result.textContent = "Log cleared.";
+        });
+    </script>
 </body>
 </html>
+```
