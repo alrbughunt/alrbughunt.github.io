@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Safari Origin Test - PoC 2</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0 auto;
+    padding: 20px 16px;
+    max-width: 760px;
+    font-family: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Arial, sans-serif;
+    color: #172033;
+    background: #f4f6fa;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #dce3ed;
+    border-radius: 12px;
+    padding: 18px;
+    margin: 16px 0;
+}
+
+button {
+    border: 0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 4px 4px 4px 0;
+    background: #245bd6;
+    color: #fff;
+    font-size: 15px;
+}
+
+button:disabled { opacity: .5; }
+
+pre {
+    padding: 14px;
+    background: #111827;
+    color: #d1fae5;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.note {
+    padding: 12px;
+    background: #fff7d6;
+    border-radius: 8px;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+<h1>Safari Origin Test</h1>
+
+<p>
+Independent diagnostic page for testing the relationship
+between the requesting website, the browser permission
+prompt, and the geolocation result.
+</p>
+
+<div class="card">
+    <h2>1. Page identity</h2>
+    <pre id="environment">Loading...</pre>
+</div>
+
+<div class="card">
+    <h2>2. Geolocation request</h2>
+
+    <p class="note">
+        This test may request your actual location.
+        Grant access only if you consent. Results remain
+        in this page and are not uploaded by this code.
+    </p>
+
+    <button id="testButton">Request Location</button>
+    <button id="clearButton">Clear Log</button>
+
+    <pre id="log">Ready.</pre>
+</div>
+
+<div class="card">
+    <h2>3. Observed browser prompt</h2>
+
+    <p>
+        Record the exact wording shown by the actual
+        Safari permission prompt. If no prompt appeared,
+        state that explicitly.
+    </p>
+
+    <textarea id="observedPrompt"
+        placeholder="Enter the exact prompt wording observed on the device."></textarea>
+
+    <p>
+        <button id="saveButton">Export Test Report</button>
+    </p>
+</div>
+
+<script>
+"use strict";
+
+const environment = document.getElementById("environment");
+const logElement = document.getElementById("log");
+const testButton = document.getElementById("testButton");
+
+const report = {
+    page: "Safari Origin Test PoC 2",
+    origin: location.origin,
+    hostname: location.hostname,
+    userAgent: navigator.userAgent,
+    secureContext: window.isSecureContext,
+    permissionState: "unknown",
+    requestResult: "not_started",
+    promptObservation: "",
+    events: []
+};
+
+function log(message) {
+    const entry = {
+        time: new Date().toISOString(),
+        message: message
+    };
+
+    report.events.push(entry);
+
+    logElement.textContent +=
+        "[" + entry.time + "] " + message + "\n";
+}
+
+environment.textContent = [
+    "Origin: " + location.origin,
+    "Hostname: " + location.hostname,
+    "Protocol: " + location.protocol,
+    "Secure context: " + window.isSecureContext,
+    "User agent: " + navigator.userAgent,
+    "Captured: " + new Date().toISOString()
+].join("\n");
+
+async function readPermissionState() {
+    if (!navigator.permissions) {
+        report.permissionState = "unsupported";
+        log("Permissions API is unavailable.");
+        return;
+    }
+
+    try {
+        const permission = await navigator.permissions.query({
+            name: "geolocation"
+        });
+
+        report.permissionState = permission.state;
+
+        log("Permission API state: " + permission.state);
+    } catch (error) {
+        report.permissionState = "unavailable";
+
+        log("Permission state could not be read: " +
+            error.message);
+    }
+}
+
+testButton.addEventListener("click", async function () {
+    if (testButton.disabled) return;
+
+    testButton.disabled = true;
+    logElement.textContent = "";
+
+    report.events = [];
+    report.requestResult = "pending";
+
+    log("TEST START");
+    log("Requesting origin: " + location.origin);
+    log("User agent: " + navigator.userAgent);
+
+    await readPermissionState();
+
+    if (!window.isSecureContext || !navigator.geolocation) {
+        report.requestResult = "unavailable";
+        log("Geolocation unavailable or insecure context.");
+        testButton.disabled = false;
+        return;
+    }
+
+    log("Calling getCurrentPosition().");
+
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            report.requestResult = "success";
+
+            log("CALLBACK: SUCCESS");
+            log("Location data returned: YES");
+            log("Latitude: " + position.coords.latitude);
+            log("Longitude: " + position.coords.longitude);
+            log("Accuracy: " +
+                position.coords.accuracy + " meters");
+            log("Position timestamp: " +
+                new Date(position.timestamp).toISOString());
+            log("TEST END");
+
+            testButton.disabled = false;
+        },
+        function (error) {
+            report.requestResult = "error";
+
+            log("CALLBACK: ERROR");
+            log("Error code: " + error.code);
+            log("Error message: " + error.message);
+            log("TEST END");
+
+            testButton.disabled = false;
+        },
+        {
+            enableHighAccuracy: false,
+            timeout: 20000,
+            maximumAge: 0
+        }
+    );
+
+    log("Request submitted.");
+});
+
+document.getElementById("clearButton")
+    .addEventListener("click", function () {
+        if (!testButton.disabled) {
+            logElement.textContent = "Log cleared.";
+        }
+    });
+
+document.getElementById("saveButton")
+    .addEventListener("click", function () {
+        report.promptObservation =
+            document.getElementById("observedPrompt").value.trim();
+
+        const blob = new Blob(
+            [JSON.stringify(report, null, 2)],
+            { type: "application/json" }
+        );
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = "safari-origin-test-report.json";
+        link.click();
+
+        setTimeout(function () {
+            URL.revokeObjectURL(url);
+        }, 1000);
+    });
+</script>
+</body>
+</html>
