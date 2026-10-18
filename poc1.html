@@ -2,244 +2,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Safari Permission Diagnostic</title>
-<style>
-body {
-    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-    max-width: 760px;
-    margin: auto;
-    padding: 20px;
-    background: #f4f6fa;
-    color: #172033;
-}
-section {
-    background: white;
-    border: 1px solid #dce2eb;
-    border-radius: 10px;
-    padding: 18px;
-    margin: 16px 0;
-}
-button {
-    padding: 12px 16px;
-    margin: 4px;
-    border: 0;
-    border-radius: 7px;
-    background: #245bd6;
-    color: white;
-    cursor: pointer;
-}
-textarea, pre {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #dce2eb;
-    border-radius: 7px;
-    overflow-wrap: anywhere;
-}
-pre {
-    background: #111827;
-    color: #d1fae5;
-    white-space: pre-wrap;
-    font-size: 12px;
-    line-height: 1.6;
-}
-.notice {
-    background: #fff7d6;
-    padding: 12px;
-    border-radius: 7px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WebKit Geolocation Origin Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+            max-width: 760px;
+            margin: 30px auto;
+            padding: 16px;
+            color: #172033;
+            background: #f4f6fa;
+        }
+        section {
+            padding: 18px;
+            margin: 16px 0;
+            background: white;
+            border: 1px solid #dce2eb;
+            border-radius: 10px;
+        }
+        button {
+            padding: 12px 16px;
+            background: #245bd6;
+            color: white;
+            border: 0;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+        pre {
+            padding: 12px;
+            color: #d1fae5;
+            background: #111827;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
+    <h1>WebKit Geolocation Origin Test</h1>
 
-<h1>Safari Permission Diagnostic</h1>
+    <section>
+        <h2>Requesting document</h2>
+        <pre id="environment"></pre>
+        <button id="startButton">Start controlled test</button>
+    </section>
 
-<p>
-This test records the actual page origin and the outcome
-of a standard geolocation permission request.
-</p>
+    <section>
+        <h2>Test log</h2>
+        <pre id="log">Ready.</pre>
+    </section>
 
-<section>
-<h2>Environment</h2>
-<pre id="environment"></pre>
-</section>
+    <script>
+        "use strict";
 
-<section>
-<h2>Geolocation test</h2>
-<p class="notice">
-This test requests your actual location. Continue only
-if you consent. No data is uploaded by this page.
-</p>
-<button id="run">Run test</button>
-<button id="download">Download report</button>
-<pre id="result">Waiting for test.</pre>
-</section>
+        const logElement = document.getElementById("log");
 
-<section>
-<h2>Prompt observed on screen</h2>
-<p>
-After testing, record the exact text shown by Safari.
-Do not substitute text from a webpage-created dialog.
-</p>
-<textarea id="promptText" rows="4"
-placeholder="Enter the exact text you observed, or state that no prompt appeared."></textarea>
-</section>
+        document.getElementById("environment").textContent = [
+            "Origin: " + location.origin,
+            "Hostname: " + location.hostname,
+            "Secure context: " + window.isSecureContext,
+            "User agent: " + navigator.userAgent,
+            "Timestamp: " + new Date().toISOString()
+        ].join("\n");
 
-<script>
-"use strict";
+        function report(message) {
+            const entry =
+                "[" + new Date().toISOString() + "] " + message;
 
-const output = document.getElementById("result");
-const runButton = document.getElementById("run");
-const downloadButton = document.getElementById("download");
-const promptInput = document.getElementById("promptText");
+            logElement.textContent += entry + "\n";
 
-const report = {
-    test: "Safari Geolocation Diagnostic",
-    origin: location.origin,
-    hostname: location.hostname,
-    userAgent: navigator.userAgent,
-    secureContext: window.isSecureContext,
-    startedAt: null,
-    finishedAt: null,
-    permissionState: "unknown",
-    geolocationResult: "not_run",
-    errorCode: null,
-    errorMessage: null,
-    coordinates: null,
-    observedPromptText: ""
-};
+            // Send diagnostics only to the local test application.
+            try {
+                const handler =
+                    window.webkit &&
+                    window.webkit.messageHandlers &&
+                    window.webkit.messageHandlers.report;
 
-function log(message) {
-    output.textContent +=
-        "[" + new Date().toISOString() + "] " +
-        message + "\n";
-}
-
-document.getElementById("environment").textContent = [
-    "Origin: " + report.origin,
-    "Hostname: " + report.hostname,
-    "Protocol: " + location.protocol,
-    "Secure context: " + report.secureContext,
-    "User agent: " + report.userAgent,
-    "Collected at: " + new Date().toISOString()
-].join("\n");
-
-async function checkPermission() {
-    if (!navigator.permissions) {
-        report.permissionState = "unsupported";
-        return;
-    }
-
-    try {
-        const status = await navigator.permissions.query({
-            name: "geolocation"
-        });
-
-        report.permissionState = status.state;
-    } catch (error) {
-        report.permissionState = "unavailable";
-    }
-}
-
-runButton.addEventListener("click", async function () {
-    if (runButton.disabled) return;
-
-    runButton.disabled = true;
-    output.textContent = "";
-    report.startedAt = new Date().toISOString();
-    report.finishedAt = null;
-    report.geolocationResult = "pending";
-    report.errorCode = null;
-    report.errorMessage = null;
-    report.coordinates = null;
-
-    log("TEST START");
-    log("Origin: " + report.origin);
-    log("User agent: " + report.userAgent);
-
-    await checkPermission();
-
-    log("Permission API state: " + report.permissionState);
-
-    if (!window.isSecureContext || !navigator.geolocation) {
-        report.geolocationResult = "unavailable";
-        log("Geolocation unavailable or insecure context.");
-        finish();
-        return;
-    }
-
-    log("Calling getCurrentPosition().");
-
-    navigator.geolocation.getCurrentPosition(
-        function (position) {
-            report.geolocationResult = "success";
-
-            report.coordinates = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-                accuracyMeters: position.coords.accuracy,
-                positionTimestamp:
-                    new Date(position.timestamp).toISOString()
-            };
-
-            log("CALLBACK: SUCCESS");
-            log("Location data returned: YES");
-            log("Latitude: " + position.coords.latitude);
-            log("Longitude: " + position.coords.longitude);
-            log("Accuracy: " + position.coords.accuracy + " m");
-
-            finish();
-        },
-
-        function (error) {
-            report.geolocationResult = "error";
-            report.errorCode = error.code;
-            report.errorMessage = error.message;
-
-            log("CALLBACK: ERROR");
-            log("Error code: " + error.code);
-            log("Error message: " + error.message);
-
-            finish();
-        },
-
-        {
-            enableHighAccuracy: false,
-            timeout: 20000,
-            maximumAge: 0
+                if (handler) {
+                    handler.postMessage(entry);
+                }
+            } catch (_) {}
         }
-    );
 
-    log("Request submitted.");
-});
+        window.requestLocationForTest = function () {
+            report("Geolocation request initiated.");
+            report("Document origin: " + location.origin);
 
-function finish() {
-    report.finishedAt = new Date().toISOString();
-    log("TEST END");
-    runButton.disabled = false;
-}
+            if (!navigator.geolocation) {
+                report("ERROR: Geolocation API unavailable.");
+                return;
+            }
 
-downloadButton.addEventListener("click", function () {
-    report.observedPromptText = promptInput.value.trim();
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    report("CALLBACK: SUCCESS");
+                    report("Latitude: " +
+                        position.coords.latitude);
+                    report("Longitude: " +
+                        position.coords.longitude);
+                    report("Accuracy: " +
+                        position.coords.accuracy + " meters");
+                    report("Position timestamp: " +
+                        new Date(position.timestamp).toISOString());
+                },
+                function (error) {
+                    report("CALLBACK: ERROR");
+                    report("Error code: " + error.code);
+                    report("Error message: " + error.message);
+                },
+                {
+                    enableHighAccuracy: false,
+                    timeout: 20000,
+                    maximumAge: 0
+                }
+            );
+        };
 
-    const blob = new Blob(
-        [JSON.stringify(report, null, 2)],
-        { type: "application/json" }
-    );
+        document.getElementById("startButton")
+            .addEventListener("click", function () {
+                const handler =
+                    window.webkit &&
+                    window.webkit.messageHandlers &&
+                    window.webkit.messageHandlers.startRace;
 
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
+                if (!handler) {
+                    report(
+                        "This page is not running in the native " +
+                        "WKWebView test harness. A normal Safari " +
+                        "page cannot reliably synchronize with " +
+                        "the native provisional-navigation callback."
+                    );
+                    return;
+                }
 
-    link.href = url;
-    link.download = "safari-diagnostic-report.json";
-    link.click();
-
-    setTimeout(function () {
-        URL.revokeObjectURL(url);
-    }, 1000);
-});
-</script>
+                report("Controlled navigation test requested.");
+                handler.postMessage("start");
+            });
+    </script>
 </body>
 </html>
