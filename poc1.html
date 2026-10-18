@@ -1,11 +1,12 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <title>Safari Geolocation Permission Diagnostic</title>
+    <title>Safari Geolocation Security Diagnostic</title>
 
     <style>
         * {
@@ -17,59 +18,81 @@
                 "Segoe UI", Arial, sans-serif;
             max-width: 800px;
             margin: 0 auto;
-            padding: 24px 16px;
+            padding: 20px 14px;
             background: #f5f7fb;
             color: #172033;
+            line-height: 1.5;
         }
 
         h1 {
-            font-size: 24px;
+            font-size: 25px;
+        }
+
+        h2 {
+            font-size: 19px;
         }
 
         .card {
-            background: #fff;
-            padding: 20px;
+            background: white;
+            padding: 18px;
             margin: 16px 0;
-            border: 1px solid #e1e6ef;
+            border: 1px solid #dfe5ef;
             border-radius: 12px;
         }
 
         button {
-            padding: 12px 18px;
+            padding: 12px 16px;
+            margin: 4px 4px 4px 0;
             border: 0;
             border-radius: 8px;
-            background: #2563eb;
-            color: #fff;
+            background: #245bd6;
+            color: white;
             font-size: 15px;
             cursor: pointer;
         }
 
+        button.secondary {
+            background: #475569;
+        }
+
         button:disabled {
-            opacity: 0.6;
+            opacity: 0.55;
             cursor: not-allowed;
         }
 
         pre {
-            padding: 14px;
-            border-radius: 8px;
             background: #111827;
             color: #d1fae5;
+            padding: 14px;
+            border-radius: 8px;
             white-space: pre-wrap;
             overflow-wrap: anywhere;
             font-size: 12px;
-            line-height: 1.6;
+            line-height: 1.65;
         }
 
         .notice {
-            color: #854d0e;
-            background: #fef9c3;
             padding: 12px;
             border-radius: 8px;
+            background: #fff7d6;
+            color: #744210;
+            font-size: 14px;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            background: #edf2f7;
+            overflow-wrap: anywhere;
         }
 
         .muted {
             color: #64748b;
-            font-size: 14px;
+            font-size: 13px;
+        }
+
+        code {
+            overflow-wrap: anywhere;
         }
     </style>
 </head>
@@ -78,37 +101,70 @@
     <h1>Safari Geolocation Diagnostic</h1>
 
     <p>
-        This page records the requesting origin and the outcome
-        of a standard browser geolocation request.
+        This diagnostic records the actual page origin,
+        browser environment, geolocation permission state
+        when available, and the result of a real
+        Geolocation API request.
     </p>
 
     <div class="card">
-        <h2>Environment</h2>
-        <pre id="environment">Loading...</pre>
+        <h2>1. Browser Environment</h2>
+        <pre id="environment">Collecting environment information...</pre>
     </div>
 
     <div class="card">
-        <h2>Geolocation Test</h2>
+        <h2>2. Permission Diagnostic</h2>
 
         <p class="notice">
-            This test requests your location through the browser's
-            Geolocation API. Grant access only if you consent.
-            Coordinates will be displayed locally on this page.
+            This test may trigger the browser's actual
+            location permission prompt. Grant access only
+            if you consent. Location information remains
+            on this page and is not transmitted by this code.
         </p>
+
+        <p>
+            <strong>Actual page origin:</strong>
+        </p>
+
+        <div class="status" id="originDisplay">
+            Loading...
+        </div>
+
+        <p>
+            <strong>Permission API status:</strong>
+        </p>
+
+        <div class="status" id="permissionState">
+            Not checked
+        </div>
+
+        <p>
+            <strong>Test result:</strong>
+        </p>
+
+        <div class="status" id="testStatus">
+            Waiting for test
+        </div>
 
         <button id="runButton" type="button">
             Run Geolocation Test
         </button>
 
-        <button id="clearButton" type="button">
+        <button id="clearButton"
+                class="secondary"
+                type="button">
             Clear Log
         </button>
 
         <p class="muted">
             No simulated permission dialog is used.
+            The page cannot set the identity displayed
+            by Safari's native permission prompt.
         </p>
+    </div>
 
-        <h3>Test Log</h3>
+    <div class="card">
+        <h2>3. Diagnostic Log</h2>
         <pre id="result" aria-live="polite">Ready.</pre>
     </div>
 
@@ -117,6 +173,15 @@
 
         const environment =
             document.getElementById("environment");
+
+        const originDisplay =
+            document.getElementById("originDisplay");
+
+        const permissionState =
+            document.getElementById("permissionState");
+
+        const testStatus =
+            document.getElementById("testStatus");
 
         const result =
             document.getElementById("result");
@@ -127,116 +192,229 @@
         const clearButton =
             document.getElementById("clearButton");
 
-        environment.textContent = [
-            `Origin: ${window.location.origin}`,
-            `Hostname: ${window.location.hostname}`,
-            `Protocol: ${window.location.protocol}`,
-            `Secure context: ${window.isSecureContext}`,
-            `User agent: ${navigator.userAgent}`,
-            `Timestamp: ${new Date().toISOString()}`
-        ].join("\n");
+        let testRunning = false;
+        let permissionStatusObject = null;
 
         function log(message) {
             const timestamp = new Date().toISOString();
 
             result.textContent +=
-                `[${timestamp}] ${message}\n`;
+                "[" + timestamp + "] " + message + "\n";
+        }
+
+        function setStatus(message) {
+            testStatus.textContent = message;
+        }
+
+        function collectEnvironment() {
+            const info = [
+                "Origin: " + window.location.origin,
+                "Hostname: " + window.location.hostname,
+                "Protocol: " + window.location.protocol,
+                "Pathname: " + window.location.pathname,
+                "Secure context: " + window.isSecureContext,
+                "Geolocation available: " +
+                    Boolean(navigator.geolocation),
+                "Permissions API available: " +
+                    Boolean(navigator.permissions),
+                "User agent: " + navigator.userAgent,
+                "Collected at: " + new Date().toISOString()
+            ];
+
+            environment.textContent = info.join("\n");
+            originDisplay.textContent = window.location.origin;
+        }
+
+        async function inspectPermission() {
+            if (!navigator.permissions ||
+                typeof navigator.permissions.query !== "function") {
+                permissionState.textContent =
+                    "Permission state unavailable through this API.";
+
+                log("Permissions API query is unavailable.");
+                return;
+            }
+
+            try {
+                permissionStatusObject =
+                    await navigator.permissions.query({
+                        name: "geolocation"
+                    });
+
+                permissionState.textContent =
+                    permissionStatusObject.state;
+
+                log(
+                    "Geolocation permission state: " +
+                    permissionStatusObject.state
+                );
+
+                permissionStatusObject.onchange = function () {
+                    permissionState.textContent =
+                        permissionStatusObject.state;
+
+                    log(
+                        "Permission state changed to: " +
+                        permissionStatusObject.state
+                    );
+                };
+            } catch (error) {
+                permissionState.textContent =
+                    "Unsupported or unavailable in this browser.";
+
+                log(
+                    "Permission query unavailable: " +
+                    error.name + ": " + error.message
+                );
+            }
         }
 
         function runTest() {
-            result.textContent = "";
+            if (testRunning) {
+                return;
+            }
 
-            log(`Origin: ${window.location.origin}`);
-            log(`User agent: ${navigator.userAgent}`);
-            log("Geolocation test started.");
+            result.textContent = "";
+            testRunning = true;
+            runButton.disabled = true;
+
+            setStatus("Requesting location...");
+            log("========== TEST START ==========");
+
+            collectEnvironment();
+
+            log("Requesting page origin: " +
+                window.location.origin);
+
+            log("User agent: " + navigator.userAgent);
+
+            log("Secure context: " + window.isSecureContext);
 
             if (!window.isSecureContext) {
                 log(
-                    "Warning: This page is not a secure context."
+                    "WARNING: The page is not a secure context."
                 );
             }
 
             if (!navigator.geolocation) {
                 log("Geolocation API is unavailable.");
+                setStatus("Geolocation API unavailable.");
+                finishTest();
                 return;
             }
 
-            runButton.disabled = true;
+            log(
+                "Calling navigator.geolocation.getCurrentPosition()."
+            );
 
-            log("Calling getCurrentPosition().");
-            log("Waiting for the browser response.");
+            log(
+                "Waiting for the browser permission and location result."
+            );
 
-            navigator.geolocation.getCurrentPosition(
-                function (position) {
-                    log("Geolocation callback: SUCCESS.");
+            try {
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        log("CALLBACK: SUCCESS");
 
-                    log(
-                        `Latitude: ${position.coords.latitude}`
-                    );
+                        log(
+                            "Latitude: " +
+                            position.coords.latitude
+                        );
 
-                    log(
-                        `Longitude: ${position.coords.longitude}`
-                    );
+                        log(
+                            "Longitude: " +
+                            position.coords.longitude
+                        );
 
-                    log(
-                        `Accuracy: ${position.coords.accuracy} meters`
-                    );
+                        log(
+                            "Accuracy: " +
+                            position.coords.accuracy +
+                            " meters"
+                        );
 
-                    log(
-                        `Position timestamp: ${
+                        log(
+                            "Position timestamp: " +
                             new Date(
                                 position.timestamp
                             ).toISOString()
-                        }`
-                    );
+                        );
 
-                    runButton.disabled = false;
-                    log("Test completed.");
-                },
+                        setStatus(
+                            "SUCCESS: Location data was returned."
+                        );
 
-                function (error) {
-                    const errorNames = {
-                        1: "PERMISSION_DENIED",
-                        2: "POSITION_UNAVAILABLE",
-                        3: "TIMEOUT"
-                    };
+                        finishTest();
+                    },
 
-                    log("Geolocation callback: ERROR.");
+                    function (error) {
+                        const errorNames = {
+                            1: "PERMISSION_DENIED",
+                            2: "POSITION_UNAVAILABLE",
+                            3: "TIMEOUT"
+                        };
 
-                    log(
-                        `Error code: ${error.code}`
-                    );
+                        log("CALLBACK: ERROR");
 
-                    log(
-                        `Error type: ${
-                            errorNames[error.code] || "UNKNOWN"
-                        }`
-                    );
+                        log("Error code: " + error.code);
 
-                    log(
-                        `Error message: ${error.message}`
-                    );
+                        log(
+                            "Error type: " +
+                            (errorNames[error.code] || "UNKNOWN")
+                        );
 
-                    runButton.disabled = false;
-                    log("Test completed.");
-                },
+                        log("Error message: " + error.message);
 
-                {
-                    enableHighAccuracy: false,
-                    timeout: 15000,
-                    maximumAge: 0
-                }
-            );
+                        setStatus(
+                            "FAILED: " +
+                            (errorNames[error.code] || "UNKNOWN")
+                        );
 
-            log("Request submitted.");
+                        finishTest();
+                    },
+
+                    {
+                        enableHighAccuracy: false,
+                        timeout: 20000,
+                        maximumAge: 0
+                    }
+                );
+
+                log("Geolocation request submitted.");
+            } catch (error) {
+                log(
+                    "Synchronous error: " +
+                    error.name + ": " + error.message
+                );
+
+                setStatus("Request failed.");
+                finishTest();
+            }
         }
+
+        function finishTest() {
+            testRunning = false;
+            runButton.disabled = false;
+
+            log("Test finished at: " + new Date().toISOString());
+            log("=========== TEST END ===========");
+        }
+
+        clearButton.addEventListener("click", function () {
+            if (testRunning) {
+                return;
+            }
+
+            result.textContent = "Log cleared.";
+            setStatus("Waiting for test");
+        });
 
         runButton.addEventListener("click", runTest);
 
-        clearButton.addEventListener("click", function () {
-            result.textContent = "Log cleared.";
+        collectEnvironment();
+
+        inspectPermission().catch(function (error) {
+            log("Permission inspection error: " + error.message);
         });
     </script>
 </body>
 </html>
-```
